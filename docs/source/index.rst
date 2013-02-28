@@ -1,0 +1,102 @@
+=============================
+RestTouch documentation
+=============================
+
+RestTouch is a simple app providing a good looking solution for working with
+REST services.
+
+You can get RestTouch by doing ``sudo pip install resttouch`` or download it from GitHub_.
+
+.. _GitHub: https://github.com/mwalus/resttouch
+
+Quick example, google search api:
+::
+	from resttouch import Service, serializator, end_point
+	from resttouch.params import QueryParam, PathParam
+	from resttouch.routes import Route
+	from resttouch.serializators import SimpleJSON
+
+	@serializator(SimpleJSON)
+	@end_point('https://ajax.googleapis.com/')
+	class GoogleService(Service):
+	    search = Route('GET', 'ajax/services/search/web',
+		    QueryParam('v', default='1.1'),
+		    QueryParam('q')
+	    )
+
+	google = GoogleService()
+	google.search(q='python')
+
+
+Another example, here is a small client for twitter api. 
+This one using most of features from version 0.1:
+::
+
+	from resttouch import Service, serializator, end_point
+	from resttouch.params import QueryParam, PathParam
+	from resttouch.routes import Route
+	from resttouch.serializators import SimpleJSON
+
+	@serializator(SimpleJSON)
+	@end_point('https://api.twitter.com')
+	class TwitterService(Service):
+	  retweeted_by = Route('GET', '1/statuses/%(id)s/retweeted_by.json',
+		PathParam('id'),
+		QueryParam('count', required=False),
+		QueryParam('page', required=False)
+	  )
+
+	  users_shows = Route('GET', '1/users/show.json',
+		QueryParam('id'),
+		QueryParam('include_entities', default='true')
+	  )
+
+	twitter = TwitterService()
+	twitter.retweeted_by(id="21947795900469248", count=5)
+	twitter.users_shows(id='6253282')
+
+
+=============================
+Service decorators
+=============================
+
+.. decorator:: serializator(serializator)
+
+Set a serializator to service class.
+
+.. decorator:: end_point(end_point)
+
+Set a end_point to service class.
+
+=============================
+Route
+=============================
+
+.. class:: Route(method, url, *args, **kwargs)
+
+Route represent single url. Non-keyword agruments are used to build Params for ``Route``.
+
+=============================
+Parametrs
+=============================
+
+.. class:: PathParam(value, default=None)
+
+Creating a path parametr object used in creating url. ``Default`` is optional parametr, specifying default value.  
+
+.. class:: QueryParam(value, default=None, required=True)
+
+Creating a query parametr object which is used to send data in GET/POST request. ``Default`` is optional parametr, specifying default value. If ``required`` is set to ``True``, app will throw exception if ``QueryParam`` key will be not given to request.
+
+=============================
+Serializators
+=============================
+
+.. class:: PlainText()
+
+Serializator which gives not serialized string, default ``Service`` serializator.
+
+.. class:: SimpleJSON()
+
+Simple JSON serializator.
+
