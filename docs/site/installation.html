@@ -1,0 +1,247 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Getting Started with RestTouch &mdash; RestTouch 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="RestTouch 0.1 documentation" href="index.html" />
+    <link rel="prev" title="RestTouch" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="index.html" title="RestTouch"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">RestTouch 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="getting-started-with-resttouch">
+<span id="ref-tutorial"></span><h1>Getting Started with RestTouch<a class="headerlink" href="#getting-started-with-resttouch" title="Permalink to this headline">¶</a></h1>
+<p>RestTouch is a simple app providing a good looking solution for working with
+REST services.</p>
+<p>You can get RestTouch by doing <tt class="docutils literal"><span class="pre">sudo</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">resttouch</span></tt> or download it from <a class="reference external" href="https://github.com/mwalus/resttouch">GitHub</a>.</p>
+<p>Quick example, google search api:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">resttouch</span> <span class="kn">import</span> <span class="n">Service</span><span class="p">,</span> <span class="n">serializator</span><span class="p">,</span> <span class="n">end_point</span>
+<span class="kn">from</span> <span class="nn">resttouch.params</span> <span class="kn">import</span> <span class="n">QueryParam</span><span class="p">,</span> <span class="n">PathParam</span>
+<span class="kn">from</span> <span class="nn">resttouch.routes</span> <span class="kn">import</span> <span class="n">Route</span>
+<span class="kn">from</span> <span class="nn">resttouch.serializators</span> <span class="kn">import</span> <span class="n">SimpleJSON</span>
+
+<span class="nd">@serializator</span><span class="p">(</span><span class="n">SimpleJSON</span><span class="p">)</span>
+<span class="nd">@end_point</span><span class="p">(</span><span class="s">&#39;https://ajax.googleapis.com/&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">GoogleService</span><span class="p">(</span><span class="n">Service</span><span class="p">):</span>
+    <span class="n">search</span> <span class="o">=</span> <span class="n">Route</span><span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;ajax/services/search/web&#39;</span><span class="p">,</span>
+            <span class="n">QueryParam</span><span class="p">(</span><span class="s">&#39;v&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&#39;1.1&#39;</span><span class="p">),</span>
+            <span class="n">QueryParam</span><span class="p">(</span><span class="s">&#39;q&#39;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="n">google</span> <span class="o">=</span> <span class="n">GoogleService</span><span class="p">()</span>
+<span class="n">google</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">q</span><span class="o">=</span><span class="s">&#39;python&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Another example, here is a small client for twitter api.
+This one using most of features from version 0.1:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">resttouch</span> <span class="kn">import</span> <span class="n">Service</span><span class="p">,</span> <span class="n">serializator</span><span class="p">,</span> <span class="n">end_point</span>
+<span class="kn">from</span> <span class="nn">resttouch.params</span> <span class="kn">import</span> <span class="n">QueryParam</span><span class="p">,</span> <span class="n">PathParam</span>
+<span class="kn">from</span> <span class="nn">resttouch.routes</span> <span class="kn">import</span> <span class="n">Route</span>
+<span class="kn">from</span> <span class="nn">resttouch.serializators</span> <span class="kn">import</span> <span class="n">SimpleJSON</span>
+
+<span class="nd">@serializator</span><span class="p">(</span><span class="n">SimpleJSON</span><span class="p">)</span>
+<span class="nd">@end_point</span><span class="p">(</span><span class="s">&#39;https://api.twitter.com&#39;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">TwitterService</span><span class="p">(</span><span class="n">Service</span><span class="p">):</span>
+  <span class="n">retweeted_by</span> <span class="o">=</span> <span class="n">Route</span><span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;1/statuses/</span><span class="si">%(id)s</span><span class="s">/retweeted_by.json&#39;</span><span class="p">,</span>
+        <span class="n">PathParam</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">),</span>
+        <span class="n">QueryParam</span><span class="p">(</span><span class="s">&#39;count&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">),</span>
+        <span class="n">QueryParam</span><span class="p">(</span><span class="s">&#39;page&#39;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+  <span class="p">)</span>
+
+  <span class="n">users_shows</span> <span class="o">=</span> <span class="n">Route</span><span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;1/users/show.json&#39;</span><span class="p">,</span>
+        <span class="n">QueryParam</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">),</span>
+        <span class="n">QueryParam</span><span class="p">(</span><span class="s">&#39;include_entities&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&#39;true&#39;</span><span class="p">)</span>
+  <span class="p">)</span>
+
+<span class="n">twitter</span> <span class="o">=</span> <span class="n">TwitterService</span><span class="p">()</span>
+<span class="n">twitter</span><span class="o">.</span><span class="n">retweeted_by</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s">&quot;21947795900469248&quot;</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">twitter</span><span class="o">.</span><span class="n">users_shows</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s">&#39;6253282&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="service-decorators">
+<h1>Service decorators<a class="headerlink" href="#service-decorators" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="serializator">
+<h2><tt class="docutils literal"><span class="pre">serializator</span></tt><a class="headerlink" href="#serializator" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt>
+<tt class="descclassname">&#64;</tt><tt class="descname">serializator</tt><big>(</big><em>serializator</em><big>)</big></dt>
+<dd></dd></dl>
+
+<p>Set a serializator to service class</p>
+</div>
+<div class="section" id="end-point">
+<h2><tt class="docutils literal"><span class="pre">end_point</span></tt><a class="headerlink" href="#end-point" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="end_point">
+<tt class="descclassname">&#64;</tt><tt class="descname">end_point</tt><big>(</big><em>end_point</em><big>)</big><a class="headerlink" href="#end_point" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Set a end_point to service class</p>
+</div>
+</div>
+<div class="section" id="route">
+<h1>Route<a class="headerlink" href="#route" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2><tt class="docutils literal"><span class="pre">Route</span></tt><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="Route">
+<em class="property">class </em><tt class="descname">Route</tt><big>(</big><em>method</em>, <em>url</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#Route" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Route represent single url. Non-keyword agruments are used to build Params for Route.</p>
+</div>
+</div>
+<div class="section" id="parametrs">
+<h1>Parametrs<a class="headerlink" href="#parametrs" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="pathparam">
+<h2><tt class="docutils literal"><span class="pre">PathParam</span></tt><a class="headerlink" href="#pathparam" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="PathParam">
+<em class="property">class </em><tt class="descname">PathParam</tt><big>(</big><em>value</em>, <em>default=None</em><big>)</big><a class="headerlink" href="#PathParam" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Creating a path parametr object used in creating url. <tt class="docutils literal"><span class="pre">Default</span></tt> is optional parametr, specifying default value.</p>
+</div>
+<div class="section" id="queryparam">
+<h2><tt class="docutils literal"><span class="pre">QueryParam</span></tt><a class="headerlink" href="#queryparam" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="QueryParam">
+<em class="property">class </em><tt class="descname">QueryParam</tt><big>(</big><em>value</em>, <em>default=None</em>, <em>required=True</em><big>)</big><a class="headerlink" href="#QueryParam" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Creating a query parametr object which is used to send data in GET/POST request. <tt class="docutils literal"><span class="pre">Default</span></tt> is optional parametr, specifying default value. If <tt class="docutils literal"><span class="pre">required</span></tt> is set to <tt class="docutils literal"><span class="pre">True</span></tt>, app will throw exception if <tt class="docutils literal"><span class="pre">QueryParam</span></tt> key will be not given to request.</p>
+</div>
+</div>
+<div class="section" id="serializators">
+<h1>Serializators<a class="headerlink" href="#serializators" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="plaintext">
+<h2><tt class="docutils literal"><span class="pre">PlainText</span></tt><a class="headerlink" href="#plaintext" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="PlainText">
+<em class="property">class </em><tt class="descname">PlainText</tt><a class="headerlink" href="#PlainText" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Serializator which gives not serialized string, default <tt class="docutils literal"><span class="pre">Service</span></tt> serializator</p>
+</div>
+<div class="section" id="simplejson">
+<h2><tt class="docutils literal"><span class="pre">SimpleJSON</span></tt><a class="headerlink" href="#simplejson" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="SimpleJSON">
+<em class="property">class </em><tt class="descname">SimpleJSON</tt><a class="headerlink" href="#SimpleJSON" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Simple JSON serializator</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Getting Started with RestTouch</a></li>
+<li><a class="reference internal" href="#service-decorators">Service decorators</a><ul>
+<li><a class="reference internal" href="#serializator"><tt class="docutils literal"><span class="pre">serializator</span></tt></a></li>
+<li><a class="reference internal" href="#end-point"><tt class="docutils literal"><span class="pre">end_point</span></tt></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#route">Route</a><ul>
+<li><a class="reference internal" href="#id1"><tt class="docutils literal"><span class="pre">Route</span></tt></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#parametrs">Parametrs</a><ul>
+<li><a class="reference internal" href="#pathparam"><tt class="docutils literal"><span class="pre">PathParam</span></tt></a></li>
+<li><a class="reference internal" href="#queryparam"><tt class="docutils literal"><span class="pre">QueryParam</span></tt></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#serializators">Serializators</a><ul>
+<li><a class="reference internal" href="#plaintext"><tt class="docutils literal"><span class="pre">PlainText</span></tt></a></li>
+<li><a class="reference internal" href="#simplejson"><tt class="docutils literal"><span class="pre">SimpleJSON</span></tt></a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">RestTouch</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/installation.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="index.html" title="RestTouch"
+             >previous</a> |</li>
+        <li><a href="index.html">RestTouch 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Marek Waluś.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
