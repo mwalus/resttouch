@@ -27,8 +27,8 @@ class BaseRoute(object):
         return True
     
     def _add_default_params(self, params):
-        for name, param in [(name, param) for name, param in self.params.iteritems() if param.default]:
-            if not params.has_key(name) and param.required:
+        for name, param in self.params.iteritems():
+            if param.default and not params.has_key(name) and param.required:
                 params[name] = param.default
         return params
 
