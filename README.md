@@ -5,6 +5,10 @@ REST client for Python
 ## Installation:
     pip install resttouch
 
+## Documentation:
+
+https://resttouch.readthedocs.org/
+
 ## Example usage:
     from resttouch import Service, serializator, end_point
     from resttouch.params import QueryParam, PathParam
