@@ -5,11 +5,6 @@ from urlparse import urljoin
 
 __all__ = ('Route')
 
-PARAM_GROUPS = (
-    ('query', QueryParam),
-    ('path', PathParam),
-)
-
 class BaseRoute(object):
     service = None
     params = []
@@ -42,15 +37,16 @@ class BaseRoute(object):
         return request_params
     
     def _regroup_params(self, params):
-        param_group = {}
-        for group_name, group in PARAM_GROUPS:
-            param_group[group_name] = {}
-        for param in params.items():
-            for group_name, group in PARAM_GROUPS:
-                if isinstance(self.params[param[0]], group):
-                    param_group[group_name].update(dict([param]))
-        return param_group
-    
+        param_groups = {
+            'query': (QueryParam, {}),
+            'path': (PathParam, {})
+        }
+        for name, param in params.iteritems():
+            for group_name, data in param_groups.iteritems():
+                if isinstance(self.params[name], data[0]):
+                    data[1][name] = param
+        return dict((group_name, data[1]) for group_name, data in param_groups.iteritems())
+
     def _prepare_and_regroup(self, kwargs):
         return self._regroup_params(self._prepare_params(kwargs))
 

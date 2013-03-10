@@ -1,7 +1,7 @@
 import urllib2
 import urllib
 
-__all__ = ()
+__all__ = ('Request')
 
 class Request(object):
     def __init__(self, url, data):

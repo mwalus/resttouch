@@ -1,6 +1,6 @@
 import json
 
-__all__ = ('SimpleJSON')
+__all__ = ('PlainText', 'SimpleJSON')
 
 class Serializator(object):
     pass
