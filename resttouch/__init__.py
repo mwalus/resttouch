@@ -4,7 +4,7 @@ __version__ = '0.1'
 __author__ = 'Marek Waluś <marekwalus@gmail.com>'
 
 from routes import Route
-from utils import ClientRestException, iteritems
+from utils import iteritems
 
 __all__ = ('Service', 'serializator', 'end_point')
 

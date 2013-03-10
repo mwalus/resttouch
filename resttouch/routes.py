@@ -1,6 +1,6 @@
 from params import Param, QueryParam, PathParam
 from request import Request
-from utils import ClientRestException, iteritems
+from utils import RestTouchException, iteritems
 from urlparse import urljoin
 
 __all__ = ('Route')
@@ -16,14 +16,14 @@ class BaseRoute(object):
 
     def _validate_param(self, param):
         if not self.params.has_key(param[0]):
-            raise ClientRestException("Unknow param: %s, choose are: %s"%(
+            raise RestTouchException("Unknow param: %s, choose are: %s"%(
                         param[0], ", ".join([p for p in self.params])))
         return True
         
     def _is_all_required(self, params):
         for name, param in self.params.iteritems():
             if not params.has_key(name) and param.required:
-                raise ClientRestException("%s param is required."%param[0])
+                raise RestTouchException("%s param is required."%name)
         return True
     
     def _add_default_params(self, params):

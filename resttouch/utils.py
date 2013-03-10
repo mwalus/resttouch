@@ -1,4 +1,4 @@
-class ClientRestException(Exception):
+class RestTouchException(Exception):
     def __init__(self, value):
         self.value = value
         
