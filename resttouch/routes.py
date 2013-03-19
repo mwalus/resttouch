@@ -54,7 +54,7 @@ class Route(BaseRoute):
     def __init__(self, method, url, *args, **kwargs):
         self.method = method
         self.url = url
-        self.params = dict([(param.value, param) for param in args if isinstance(param, Param)])
+        self.params = dict((param.value, param) for param in args if isinstance(param, Param))
             
     def __call__(self, *args, **kwargs):
         groups = self._prepare_and_regroup(kwargs)
