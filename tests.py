@@ -15,6 +15,9 @@ class TestRouteFunctions(unittest.TestCase):
         with self.assertRaises(RestTouchException): 
             self.service.retweeted_by(count=20)
             
+    def test_extra_query(self):
+        self.assertRaises(self.service.users_shows(id=12345, extra_query={'include_entities':'false'}), dict)
+            
     def test_json_serializator_request(self):
         self.assertIsInstance(self.service.users_shows(id='6253282'), dict)
         
