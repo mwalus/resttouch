@@ -50,6 +50,7 @@ class BaseRoute(object):
     def _prepare_and_regroup(self, kwargs):
         return self._regroup_params(self._prepare_params(kwargs))
 
+
 class Route(BaseRoute):    
     def __init__(self, method, url, *args, **kwargs):
         self.method = method
@@ -57,7 +58,10 @@ class Route(BaseRoute):
         self.params = dict((param.value, param) for param in args if isinstance(param, Param))
             
     def __call__(self, *args, **kwargs):
+        extra_query = kwargs.pop('extra_query', {})
         groups = self._prepare_and_regroup(kwargs)
+        
+        groups['query'].update(extra_query)
         
         request = Request(urljoin(self.service.end_point, self.url % groups['path']), groups['query'])
         response = request.__getattribute__(self.method.lower())()
