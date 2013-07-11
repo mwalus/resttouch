@@ -1,8 +1,9 @@
-from resttouch.methods import GET, POST, PUT, DELETE
-from params import Param, QueryParam, PathParam, BodyContent
+from resttouch.methods import GET
+from params import Param, QueryParam, PathParam, BodyParam
 from request import Request
 from utils import RestTouchException, iteritems
 from urlparse import urljoin
+
 
 __all__ = ('Route')
 
@@ -43,20 +44,15 @@ class BaseRoute(object):
         param_groups = {
             'query': (QueryParam, {}),
             'path': (PathParam, {}),
-            'body': (BodyContent, {})
+            'body': (BodyParam, {})
         }
         for name, param in params.iteritems():
             for group_name, data in param_groups.iteritems():
                 if isinstance(self.params[name], data[0]):
-                    if isinstance(self.params[name], BodyContent):
+                    if isinstance(self.params[name], BodyParam):
                         if self.method.upper() == GET:
                             raise RestTouchException('You can use BodyContent only in POST, PUT and DELETE methods')
-                        elif 'body' in data[1]:
-                            raise RestTouchException('You can use only one BodyContent instance')
-                    data[1][name] = param
-
-        if len(param_groups['query'][1].keys()) > 0 and len(param_groups['body'][1].keys()) > 0:
-            raise RestTouchException('You cant use BodyContent and QueryParam at once')
+                    data[1][name] = self.params[name].__str__(param)
 
         return dict((group_name, data[1]) for group_name, data in param_groups.iteritems())
 
@@ -84,5 +80,5 @@ class Route(BaseRoute):
         response = request.__getattribute__(self.method.lower())()
         
         if self.service.serializator:
-            return self.service.serializator.serialize(response)
+            return self.service.serializator.deserialize(response)
         return response

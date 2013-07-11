@@ -1,6 +1,6 @@
 from resttouch.serializators import PlainText
 
-__all__ = ('PathParam', 'QueryParam', 'BodyContent')
+__all__ = ('PathParam', 'QueryParam', 'BodyParam')
 
 
 class Param(object):
@@ -9,6 +9,9 @@ class Param(object):
     def __init__(self, value, default=None):
         self.value = str(value)
         self.default = default
+
+    def __str__(self, str):
+        return str
 
 
 class PathParam(Param):
@@ -21,7 +24,11 @@ class QueryParam(Param):
         super(QueryParam, self).__init__(*args, **kwargs)
 
 
-class BodyContent(Param):
-    def __init__(self, serializator=PlainText):
-        self.serializator = serializator
-        super(BodyContent, self).__init__(value='body', default=None)
+class BodyParam(Param):
+    def __init__(self, value='body', default=None, serializator=PlainText):
+        self.serializator = serializator()
+        self.value = value
+        self.default = default
+
+    def __str__(self, str):
+        return self.serializator.serialize(str)

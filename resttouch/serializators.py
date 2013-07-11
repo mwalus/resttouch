@@ -8,10 +8,16 @@ class Serializator(object):
 
 
 class PlainText(Serializator):
-    def serialize(self, string):
+    def deserialzie(self, string):
         return string
+
+    def serialize(self, obj):
+        return obj
         
 
 class SimpleJSON(Serializator):
-    def serialize(self, string):
+    def deserialize(self, string):
         return json.loads(string)
+
+    def serialize(self, obj):
+        return json.dumps(obj)
