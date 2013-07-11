@@ -5,9 +5,10 @@ __all__ = ('Request')
 
 
 class Request(object):
-    def __init__(self, url, data, headers={}):
+    def __init__(self, url, data, body, headers={}):
         self.url = url
         self.data = data
+        self.body = body
         self.headers = headers
         
     def get(self):
@@ -19,7 +20,11 @@ class Request(object):
         return response.read()
     
     def post(self):
-        data = urllib.urlencode(self.data)
+        if self.body:
+            data = self.body['body']
+        else:
+            data = urllib.urlencode(self.data)
+
         request = urllib2.Request(self.url, data, self.headers)
         response = urllib2.urlopen(request)
         return response.read()
