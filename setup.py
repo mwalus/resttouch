@@ -26,7 +26,7 @@ for dirpath, dirnames, filenames in os.walk(tool_dir):
 
 setup(
     name = "resttouch",
-    version = '0.1.2',
+    version = '0.2.0',
     author = u'Marek Waluś',
     author_email = 'marekwalus@gmail.com',
     description = 'REST client',
