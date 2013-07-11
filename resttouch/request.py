@@ -3,6 +3,7 @@ import urllib
 
 __all__ = ('Request')
 
+
 class Request(object):
     def __init__(self, url, data):
         self.url = url

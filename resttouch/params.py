@@ -1,5 +1,6 @@
 __all__ = ('PathParam', 'QueryParam')
 
+
 class Param(object):
     required = True
     
@@ -7,11 +8,12 @@ class Param(object):
         self.value = str(value)
         self.default = default
         
+
 class PathParam(Param):
     pass
+
 
 class QueryParam(Param):
     def __init__(self, *args, **kwargs):
         self.required = kwargs.pop('required', True)
         super(QueryParam, self).__init__(*args, **kwargs)
-        

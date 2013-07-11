@@ -5,6 +5,7 @@ from urlparse import urljoin
 
 __all__ = ('Route')
 
+
 class BaseRoute(object):
     service = None
     params = []

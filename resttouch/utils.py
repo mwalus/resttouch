@@ -5,5 +5,6 @@ class RestTouchException(Exception):
     def __str__(self):
         return self.value
     
+
 def iteritems(d):
     return iter(getattr(d, 'iteritems')())
