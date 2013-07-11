@@ -5,21 +5,22 @@ __all__ = ('Request')
 
 
 class Request(object):
-    def __init__(self, url, data):
+    def __init__(self, url, data, headers={}):
         self.url = url
         self.data = data
+        self.headers = headers
         
     def get(self):
         request = urllib2.Request(
-                url=self.url + '?' + urllib.urlencode(self.data)
+            url=self.url + '?' + urllib.urlencode(self.data),
+            headers=self.headers
         )
         response = urllib2.urlopen(request)
         return response.read()
     
     def post(self):
-        request = urllib2.Request(
-                url=self.url, data=self.data
-        )
+        data = urllib.urlencode(self.data)
+        request = urllib2.Request(self.url, data, self.headers)
         response = urllib2.urlopen(request)
         return response.read()
     

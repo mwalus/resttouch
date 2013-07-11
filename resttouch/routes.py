@@ -64,7 +64,12 @@ class Route(BaseRoute):
         
         groups['query'].update(extra_query)
         
-        request = Request(urljoin(self.service.end_point, self.url % groups['path']), groups['query'])
+        request = Request(urljoin(
+            self.service.end_point,
+            self.url % groups['path']),
+            groups['query'],
+            self.service.headers
+        )
         response = request.__getattribute__(self.method.lower())()
         
         if self.service.serializator:
