@@ -17,10 +17,7 @@ class Request(object):
         return self.url + '?' + urllib.urlencode(self.query_data)
 
     def get(self):
-        request = urllib2.Request(
-            url=self.get_full_url(),
-            headers=self.headers
-        )
+        request = urllib2.Request(url=self.get_full_url(), headers=self.headers)
         response = urllib2.urlopen(request)
         return response.read()
     
@@ -30,11 +27,7 @@ class Request(object):
         else:
             data = urllib.urlencode(self.body)
 
-        request = urllib2.Request(
-            self.get_full_url(),
-            data,
-            self.headers
-        )
+        request = urllib2.Request(self.get_full_url(), data, self.headers)
         response = urllib2.urlopen(request)
         return response.read()
     

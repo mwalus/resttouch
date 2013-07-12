@@ -49,9 +49,6 @@ class BaseRoute(object):
         for name, param in params.iteritems():
             for group_name, data in param_groups.iteritems():
                 if isinstance(self.params[name], data[0]):
-                    if isinstance(self.params[name], BodyParam):
-                        if self.method.upper() == GET:
-                            raise RestTouchException('You can use BodyContent only in POST, PUT and DELETE methods')
                     data[1][name] = self.params[name].__str__(param)
 
         return dict((group_name, data[1]) for group_name, data in param_groups.iteritems())
