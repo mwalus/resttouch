@@ -29,29 +29,29 @@ def headers(headers):
         return klass
     return wrapper
 
+
 def build_routes(bases, attrs):
     return [(route_name, obj) for route_name, obj in list(iteritems(attrs)) if isinstance(obj, Route)]
 
-
-def add_service_to_routes(service):
-    for r in service.routes:
-        r[1].service = service
-    
 
 class DeclarativeRouteMetaclass(type):
     def __new__(cls, name, bases, attrs):
         attrs['routes'] = build_routes(bases, attrs)
         new_class = super(DeclarativeRouteMetaclass,
                      cls).__new__(cls, name, bases, attrs)
-        add_service_to_routes(new_class)
         return new_class
+
 
 class Service(object):
     __metaclass__ = DeclarativeRouteMetaclass
     
-    endpoint = ''
+    end_point = ''
     serializator = None
     headers = {}
+
+    def __init__(self):
+        for route_name, obj in self.routes:
+            obj.service = self
 
     def set_header(self, header):
         self.headers.update(header)

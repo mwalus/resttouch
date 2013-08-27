@@ -9,9 +9,8 @@ __all__ = ('Route')
 
 
 class BaseRoute(object):
-    service = None
     params = []
-    url, method = None, None
+    url, method, service = None, None, None
 
     def _validate_param(self, param):
         if not self.params.has_key(param[0]):
@@ -57,7 +56,7 @@ class BaseRoute(object):
         return self._regroup_params(self._prepare_params(kwargs))
 
 
-class Route(BaseRoute):    
+class Route(BaseRoute):
     def __init__(self, method, url, *args):
         self.method = method
         self.url = url
