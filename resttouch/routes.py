@@ -26,7 +26,7 @@ class Route(object):
         for name, value in kwargs.iteritems():
             if name not in self.params.keys():
                 raise ValueError("Unknown parameter: %s, available parameters: " % name +
-                                 ", ".join([p for p in route.params]))
+                                 ", ".join([p for p in self.params]))
 
         for name, param in self.params.iteritems():
             # Add default parameters defined in route but not found in input_parameters
