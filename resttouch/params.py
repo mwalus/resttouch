@@ -1,17 +1,15 @@
-from resttouch.serializators import PlainText
+import inspect
+import sys
 
-__all__ = ('PathParam', 'QueryParam', 'BodyParam')
+__all__ = ('PathParam', 'QueryParam', 'BodyParam', 'FileParam')
 
 
 class Param(object):
     required = True
     
     def __init__(self, value, default=None):
-        self.value = str(value)
+        self.value = value
         self.default = default
-
-    def __str__(self, str):
-        return str
 
 
 class PathParam(Param):
@@ -25,10 +23,14 @@ class QueryParam(Param):
 
 
 class BodyParam(Param):
-    def __init__(self, value='body', default=None, serializator=PlainText):
-        self.serializator = serializator()
-        self.value = value
-        self.default = default
+    pass
 
-    def __str__(self, str):
-        return self.serializator.serialize(str)
+
+class FileParam(Param):
+    pass
+
+
+param_types = {}
+for name, obj in inspect.getmembers(sys.modules[__name__]):
+    if isinstance(obj, Param):
+        param_types[name] = obj
