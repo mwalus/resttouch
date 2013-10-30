@@ -1,21 +1,25 @@
-from resttouch import Service, parser, end_point
+from resttouch import Service, Route
 from resttouch.params import QueryParam
-from resttouch.routes import Route
-from resttouch.parser import JSONParser
+from resttouch.parsers import JSONParser
 
 
-@parser(JSONParser)
-@end_point('https://ajax.googleapis.com/')
 class GoogleService(Service):
+    end_point = 'https://ajax.googleapis.com/'
+    parser = JSONParser
+
+    globals = dict(
+        allow_redirects=True
+    )
+
     search = Route('GET', 'ajax/services/search/web', [
         QueryParam('v', default='1.1'),
         QueryParam('q')
-    ], allow_redirects=True)
+    ])
 
     def before_request(self, request):
         if request.params['q'] == 'python':
             print 'Searching for python!'
-        return request
+        return 1
 
     def after_request(self, request, response):
         if request.params['v'] == '1.1' and response.status == 200:

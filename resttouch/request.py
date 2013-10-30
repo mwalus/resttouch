@@ -1,6 +1,4 @@
 from collections import namedtuple
-import urllib2
-import urllib
 
 __all__ = ('Request')
 
