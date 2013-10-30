@@ -19,7 +19,7 @@ class GoogleService(Service):
     def before_request(self, request):
         if request.params['q'] == 'python':
             print 'Searching for python!'
-        return 1
+        return request
 
     def after_request(self, request, response):
         if request.params['v'] == '1.1' and response.status == 200:
