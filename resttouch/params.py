@@ -1,4 +1,5 @@
 import inspect
+import types
 import sys
 
 __all__ = ('PathParam', 'QueryParam', 'BodyParam', 'FileParam')
@@ -22,7 +23,7 @@ class QueryParam(Param):
         super(QueryParam, self).__init__(*args, **kwargs)
 
 
-class BodyParam(Param):
+class DataParam(Param):
     pass
 
 
@@ -31,6 +32,6 @@ class FileParam(Param):
 
 
 param_types = {}
-for name, obj in inspect.getmembers(sys.modules[__name__]):
-    if isinstance(obj, Param):
-        param_types[name] = obj
+for name, cls in inspect.getmembers(sys.modules[__name__]):
+    if isinstance(cls, (types.TypeType, Param)):
+        param_types[name] = cls

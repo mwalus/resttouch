@@ -6,7 +6,10 @@ __author__ = 'Marek Waluś <marekwalus@gmail.com>'
 
 __all__ = ['Service', 'Route']
 
-from params import param_types
+from resttouch.params import param_types
+from resttouch.parsers import Parser
+from requests import Request, Session
+from urlparse import urljoin
 
 AVAILABLE_METHODS = [
     'GET',
@@ -18,33 +21,10 @@ AVAILABLE_METHODS = [
 ]
 
 
-def build_routes(bases, attrs):
-    return [(route_name, obj) for route_name, obj in attrs.iteritems() if isinstance(obj, Route)]
-
-
-class DeclarativeRouteMetaclass(type):
-    def __new__(cls, name, bases, attrs):
-        attrs['routes'] = build_routes(bases, attrs)
-        new_class = super(DeclarativeRouteMetaclass,
-                     cls).__new__(cls, name, bases, attrs)
-        return new_class
-
-
-class Service(object):
-    __metaclass__ = DeclarativeRouteMetaclass
-    
-    end_point = 'localhost'
-    headers = {}
-    routes = []
-    output_parser = None
-
-    def __init__(self):
-        for route_name, obj in self.routes:
-            obj.service = self
-
-
 class Route(object):
+    # Reference to service instance
     service = None
+    name = ''
 
     def __init__(self, method, url, params, **kwargs):
         assert method in AVAILABLE_METHODS, \
@@ -53,29 +33,80 @@ class Route(object):
         self.method = method
         self.url = url
         self.params = dict((param.value, param) for param in params)
-        self.kwargs = kwargs
-
-    @property
-    def grouped_params(self):
-        groups = dict((klass, []) for name, klass in param_types)
-        for name, param in self.params.iteritems():
-            for param_type in groups.keys():
-                if isinstance(param, param_type):
-                    groups[param_type].append(param)
-        return groups
+        self.request_kwargs = kwargs
 
     def __call__(self, **kwargs):
-        # Check if all input parameters are defined in route
+        """
+        Prepare data and start request
+        """
+        # Check if all keyword arguments are defined in route
         for name, value in kwargs.iteritems():
             if name not in self.params.keys():
                 raise ValueError("Unknown parameter: %s, available parameters: " % name +
                                  ", ".join([p for p in self.params]))
 
         for name, param in self.params.iteritems():
-            # Add default parameters defined in route but not found in input_parameters
+            # Add default parameters to keyword arguments
             if name not in kwargs and param.default:
                 kwargs[name] = param.default
 
-            # If parameter marked as required is not found in input_parameters raise ValueError
+            # If parameter is marked as required and not in keyword arguments
             elif name not in kwargs and param.required:
                 raise ValueError('%s param is required!' % name)
+
+        # group keyword argument by parameter base class
+        groups = dict((p, {}) for p in param_types.keys())
+        for name, value in kwargs.iteritems():
+            for cls_name, cls in param_types.iteritems():
+                if isinstance(self.params[name], cls):
+                    groups[cls_name].update({name: value})
+
+        # Create Session and Request instance
+        session = Session()
+        request = Request(
+            method=self.method,
+            url=urljoin(self.service.end_point, self.url % groups['PathParam']),
+            params=groups['QueryParam'],
+            data=groups['DataParam'],
+            files=groups['FileParam'],
+            **dict(self.service.globals, **self.request_kwargs)
+        )
+        # prepare_request
+        prepped = session.prepare_request(request)
+
+        # Trigger before_request
+        if hasattr(self.service, 'before_request'):
+            prepped = self.service.before_request(prepped)
+
+        response = session.send(prepped)
+
+        # Trigger after_request
+        if hasattr(self.service, 'after_request'):
+            response = self.service.after_request(response)
+
+        # Trigger status code
+        if hasattr(self.service, '%s_on_%s' % (self.name, response.status_code)):
+            response = getattr(self.service, '%s_on_%s' % (self.name, response.status_code))(response)
+
+        return response
+
+
+class RouteMetaclass(type):
+    def __new__(cls, name, bases, attrs):
+        attrs['routes'] = [(route_name, obj) for route_name, obj in attrs.iteritems() if isinstance(obj, Route)]
+        return super(RouteMetaclass, cls).__new__(cls, name, bases, attrs)
+
+
+class Service(object):
+    __metaclass__ = RouteMetaclass
+
+    end_point = 'localhost'
+    routes = []
+    globals = {}
+    output_parser = Parser
+
+    def __init__(self):
+        # Add service reference to all routes
+        for name, route in self.routes:
+            route.service = self
+            route.name = name

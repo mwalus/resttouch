@@ -8,7 +8,8 @@ class GoogleService(Service):
     parser = JSONParser
 
     globals = dict(
-        allow_redirects=True
+        #allow_redirects=True,
+        headers={'user-agent': 'Python RestTouch v0.5'}
     )
 
     search = Route('GET', 'ajax/services/search/web', [
@@ -17,23 +18,23 @@ class GoogleService(Service):
     ])
 
     def before_request(self, request):
-        if request.params['q'] == 'python':
-            print 'Searching for python!'
+        print 'Before request'
         return request
 
-    def after_request(self, request, response):
-        if request.params['v'] == '1.1' and response.status == 200:
-            print 'Oh, version 1.1 is working!'
+    def after_request(self, response):
+        print 'After request!'
         return response
 
-    def search_on_302(self, request, response):
-        if request.params['q'] == 'move':
-            print "We moved"
+    def search_on_200(self, response):
+        print "200!"
         return response
 
-    def search_on_404(self, request, response):
-        if request.params['q'] == 'python':
-            print "Python not found?!"
+    def search_on_302(self, response):
+        print "We moved"
+        return response
+
+    def search_on_404(self, response):
+        print "Python not found?!"
         return response
 
 if __name__ == "__main__":
