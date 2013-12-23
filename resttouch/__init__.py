@@ -1,7 +1,7 @@
 #coding: utf-8
 
 __version__ = '0.5.0'
-__author__ = 'Marek Waluś <marekwalus@gmail.com>'
+__author__ = u'Marek Waluś <marekwalus@gmail.com>'
 
 
 __all__ = ['Service', 'Route']

@@ -15,7 +15,7 @@ class TestRouteFunctions(unittest.TestCase):
             self.service.search()
 
     def test_json_parser_request(self):
-        self.assertIsInstance(self.service.search(id='python'), dict)
+        self.assertIsInstance(self.service.search(q='python'), dict)
         
 
 if __name__ == '__main__':
