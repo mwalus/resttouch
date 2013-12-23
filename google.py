@@ -1,15 +1,19 @@
 from resttouch import Service, Route
 from resttouch.params import QueryParam
-from resttouch.parsers import JSONParser
+from resttouch.parsers import plain, json_parser
 
 
 class GoogleService(Service):
     end_point = 'https://ajax.googleapis.com/'
-    parser = JSONParser
+    input_parser = plain
+    output_parser = json_parser
 
-    globals = dict(
-        #allow_redirects=True,
+    request_globals = dict(
         headers={'user-agent': 'Python RestTouch v0.5'}
+    )
+
+    session_globals = dict(
+        allow_redirects=True
     )
 
     search = Route('GET', 'ajax/services/search/web', [

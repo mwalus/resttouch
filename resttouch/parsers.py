@@ -1,10 +1,6 @@
-class Parser(object):
-    def parse_request(self, request):
-        return request
-
-    def after_request(self, response):
-        return response
+def plain(obj):
+    return obj
 
 
-class JSONParser(Parser):
-    pass
+def json_parser(obj):
+    return obj.json()
