@@ -1,6 +1,8 @@
 #coding: utf-8
 from distutils.core import setup
+from resttouch import __version__ as version
 import os
+
 
 def fullsplit(path, result=None):
     if result is None:
@@ -25,15 +27,15 @@ for dirpath, dirnames, filenames in os.walk(tool_dir):
         data_files.append([dirpath, [os.path.join(dirpath, f) for f in filenames]])
 
 setup(
-    name = "resttouch",
-    version = '0.2.2',
-    author = u'Marek Waluś',
-    author_email = 'marekwalus@gmail.com',
-    description = 'REST client',
-    packages = packages,
-    data_files = data_files,
-    classifiers = [
+    name="resttouch",
+    version=version,
+    author=u'Marek Waluś',
+    author_email='marekwalus@gmail.com',
+    description='Python REST client based on Requests',
+    packages=packages,
+    data_files=data_files,
+    classifiers=[
         'Environment :: Web Environment',
         'Programming Language :: Python',
-   ],
+    ],
 )

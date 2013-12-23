@@ -80,7 +80,7 @@ class Route(object):
             method=self.method,
             url=urljoin(self.service.end_point, self.url % groups['PathParam']),
             params=groups['QueryParam'],
-            data=groups['DataParam'],
+            data=self.service.input_data_parser.im_func(groups['DataParam']),
             files=groups['FileParam'],
             **dict(self.service.request_globals, **self.request_kwargs)
         )
@@ -120,7 +120,7 @@ class Service(object):
     routes = []
     request_globals = {}
     session_globals = {}
-    input_parser = plain
+    input_data_parser = plain
     output_parser = plain
 
     def __init__(self):

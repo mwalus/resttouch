@@ -5,7 +5,7 @@ from resttouch.parsers import plain, json_parser
 
 class GoogleService(Service):
     end_point = 'https://ajax.googleapis.com/'
-    input_parser = plain
+    input_data_parser = plain
     output_parser = json_parser
 
     request_globals = dict(
@@ -22,19 +22,17 @@ class GoogleService(Service):
     ])
 
     def before_request(self, request):
-        print 'Before request'
+        if not bool(request.body):
+            print 'No body needed for this request ;-)'
         return request
 
     def after_request(self, response):
-        print 'After request!'
+        if 'javascript' in response.headers['content-type']:
+            print "Ladies and Gentlemen, we got JSON here!"
         return response
 
     def search_on_200(self, response):
-        print "200!"
-        return response
-
-    def search_on_302(self, response):
-        print "We moved"
+        print 'Got 200 Status!'
         return response
 
     def search_on_404(self, response):
