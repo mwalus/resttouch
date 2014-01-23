@@ -43,8 +43,8 @@ class Route(object):
         self.method = method
         self.url = url
         self.params = dict((param.value, param) for param in params)
-        self.request_kwargs = request_kwargs if request_kwargs else {}
-        self.session_kwargs = session_kwargs if session_kwargs else {}
+        self.request_kwargs = request_kwargs or {}
+        self.session_kwargs = session_kwargs or {}
 
     def __call__(self, **kwargs):
         """
