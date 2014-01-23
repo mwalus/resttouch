@@ -32,10 +32,15 @@ class Route(object):
         Initialize route
 
         :param method: Method name: `GET`, `OPTIONS`, `POST`, `PUT`, `PATCH` or `DELETE`
+        :type method: str
         :param url: Route url, may be python string template if path parameters are defined in `params`
+        :type url: str
         :param params: List of route parameters, :class Param: instances
-        :param request_kwargs:  Arguments as dict for request instance, override service `request_globals`
-        :param session_kwargs: Arguments as dict for session instance. override service `session_globals`
+        :type params: list
+        :param request_kwargs: Keyword arguments for request instance, override service `request_globals`
+        :type request_kwargs: dict
+        :param session_kwargs: Keyword arguments for session instance. override service `session_globals`
+        :type session_kwargs: dict
         """
         assert method in AVAILABLE_METHODS, \
             'Unrecognized method: %s' % method
@@ -50,7 +55,7 @@ class Route(object):
         """
         Prepare data and start request
 
-        :kwargs: keyword arguments
+        :param kwargs: route parameters
         """
         # Check if all keyword arguments are defined in route
         for name, value in kwargs.iteritems():
