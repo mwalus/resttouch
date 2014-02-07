@@ -79,6 +79,10 @@ class Route(object):
                 if isinstance(self.params[name], cls):
                     groups[cls_name].update({name: value})
 
+	# If just one data param is defined create as main data
+	if groups['DataParam'].keys() == 1:
+		groups['DataParam'] = groups['DataParam'].keys()[0]
+
         # Create Session and Request instance
         session = Session()
         request = Request(
