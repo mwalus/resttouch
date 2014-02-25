@@ -1,6 +1,6 @@
 #coding: utf-8
 
-__version__ = '0.5.2'
+__version__ = '0.5.3'
 __author__ = u'Marek Waluś <marekwalus@gmail.com>'
 
 
@@ -80,8 +80,8 @@ class Route(object):
                     groups[cls_name].update({name: value})
 
 	# If just one data param is defined create as main data
-	if len(groups['DataParam'].keys()) == 1:
-		groups['DataParam'] = groups['DataParam'][keys()[0]]
+	if groups['DataParam'].values() == 1:
+		groups['DataParam'] = groups['DataParam'].values()[0]
 
         # Create Session and Request instance
         session = Session()
